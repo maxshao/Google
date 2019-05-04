@@ -1,0 +1,18 @@
+{
+  "name": "GGBet Extensions",
+  "description": "First Learn Google Extension",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://gg.bet/en/betting*"
+  ],
+  "content_scripts": [
+    {
+      "js": [ "js/jquery-2.0.3.min.js", "entities/entity.js", "controllers/init.js" ],
+      "matches": [ "https://gg.bet/en/betting*" ],
+      "run_at": "document_idle"
+    }
+  ]
+}
