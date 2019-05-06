@@ -2,19 +2,19 @@
 console.log('hello world');
 
 class SysStorage {
-    saveArrayToString(ls) {
+    saveArrayToString(ls) { // 存储所有比赛的URL，用户遍历获取比赛详细数据
         localStorage.setItem('matchIds', ls.join('@'));
     }
-    getStringToArray() {
+    getStringToArray() { // 获取比赛URL数组
         let d = localStorage.getItem('matchIds');
         console.log(d.length);
         if (d.length == 0) return null;
         return d.split('@');
     }
-    setExecute(v) {
+    setExecute(v) { // 设置程序在本地是第一次执行
         localStorage.setItem('first', v);
     }
-    getExecute() {
+    getExecute() {// 判断程序在本地是否第一次执行
         return localStorage.getItem('first');
     }
 }
@@ -28,11 +28,17 @@ let dateUtils = {
 };
 
 let ggbetConfig = {
-    pushUrl: "https://dc.com/api/Data",
-    siteUrl: "https://gg.bet/en/betting",
-    refreshToGGBet: function () {
+    pushUrl: "https://dc.com/api/Data", // 推送地址
+    siteUrl: "https://gg.bet/en/betting", // 站点地址
+    refreshToGGBet: function () { // 刷新页面
         window.location.href = ggbetConfig.siteUrl;
-    } 
+    },
+    regLeagueUrl: function (str) {
+        var reg = /(?<=")([^:]+)(?=")/g;
+        if (reg.test(str))
+            return /(?<=")([^:]+)(?=")/g.exec(str)[0];
+        else return null;
+    }
 };
 
 
@@ -60,15 +66,35 @@ class Matches {
         if ($('.matchRowContainer__container___1_tLJ').length == 0) return;
         // 遍历比赛，从中抓取 投注项和竞猜项
         let listUrl = [];
+        let leagueArrList = [];
+        let leagueJson = {};
         $('.matchRowContainer__container___1_tLJ').toArray().forEach(element => {
             let href = $(element).find('.middlePartMatchRow__team___191jq .__app-LogoTitle-link').first().attr('href');
             listUrl.push(href);
+            let leagueName = $(element).find('.matchRow__right-part___1rZFy .__app-TournamentLogo-tournament-logo').attr('title');
+            let leagueUrl = $(element).find('.matchRow__right-part___1rZFy .__app-TournamentLogo-tournament-logo').attr('style');
+            //console.log(leagueName);
+            leagueJson = {};
+            if (leagueUrl != 'undefined') {
+                let url = ggbetConfig.regLeagueUrl("'" + leagueUrl + "'");
+                if (url != null) {
+                    leagueJson.name = leagueName;
+                    leagueJson.url = url;
+                    let inArr = leagueArrList.find((n) => n.name == leagueName);
+                    console.log(inArr);
+                    console.log(inArr == 'undefined');
+                    console.log(typeof(inArr) == 'undefined');
+                    console.log(leagueJson);
+                    if (typeof(inArr) == 'undefined')
+                        leagueArrList.push(leagueJson);
+                }
+            }
         });
+        console.log(leagueArrList);
+        //let sysStorage = new SysStorage();
+        //sysStorage.saveArrayToString(listUrl);
 
-        let sysStorage = new SysStorage();
-        sysStorage.saveArrayToString(listUrl);
-
-        ggbetConfig.refreshToGGBet();
+        //ggbetConfig.refreshToGGBet();
     }
 }
 
@@ -83,12 +109,12 @@ class MatchDetails {
             let t_html = $('.Match__container___fpI_d');
             // 1#比赛信息
             let obj = t_html.find('.MatchHeaderDesktop__header___2eMii');
-            let league = $(obj).find('.LinesEllipsis').html();
-            let gameAndStatus = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[0]).html();
-            let startAt = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[1]).html();
-            let homeTeam = $(obj).find('.TeamHeader__name___3cKcj').first().html();
-            let awayTeam = $(obj).find('.TeamHeader__name___3cKcj').last().html();
-            startAt = dateUtils.format_match_begintime(startAt);
+            let league = $(obj).find('.LinesEllipsis').html(); // 联赛名称
+            let gameAndStatus = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[0]).html(); // 游戏状态
+            let startAt = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[1]).html(); // 开始时间
+            let homeTeam = $(obj).find('.TeamHeader__name___3cKcj').first().html(); // 主队
+            let awayTeam = $(obj).find('.TeamHeader__name___3cKcj').last().html(); // 客队
+            startAt = dateUtils.format_match_begintime(startAt);// 转换为日期格式
 
             let req = {};
             req.gameName = gameAndStatus.split(',')[0];
@@ -106,14 +132,14 @@ class MatchDetails {
 
                 let bet = {};
                 let betItems = [];
-                var betName = $(ele).find('.marketTable__header___mSHxT span').html();
+                var betName = $(ele).find('.marketTable__header___mSHxT span').html(); // 竞猜项名称
                 bet.betName = betName;
                 var arr = $(ele).find('.__app-Odd-button').toArray();
                 for (var i in arr) {
                     let betItem = {};
                     let arr_title = $(arr[i]).attr('title').split(': ');
-                    betItem.itemName = arr_title[0];
-                    betItem.odds = arr_title[1];
+                    betItem.itemName = arr_title[0]; // 投注项名称
+                    betItem.odds = arr_title[1];// 投注项赔率
                     betItems.push(betItem);
                 }
                 bet.betItem = betItems;
