@@ -28,7 +28,8 @@ let dateUtils = {
 };
 
 let ggbetConfig = {
-    pushUrl: "https://dc.com/api/Data", // 推送地址
+    pushUrl: "https://dc.com/api/Data/save", // 推送地址
+    pushImgUrl: "https://dc.com/api/Data/saveImg",
     siteUrl: "https://gg.bet/en/betting", // 站点地址
     refreshToGGBet: function () { // 刷新页面
         window.location.href = ggbetConfig.siteUrl;
@@ -83,18 +84,28 @@ class Matches {
                     let inArr = leagueArrList.find((n) => n.name == leagueName);
                     console.log(inArr);
                     console.log(inArr == 'undefined');
-                    console.log(typeof(inArr) == 'undefined');
+                    console.log(typeof (inArr) == 'undefined');
                     console.log(leagueJson);
-                    if (typeof(inArr) == 'undefined')
+                    if (typeof (inArr) == 'undefined')
                         leagueArrList.push(leagueJson);
                 }
             }
         });
+        // 提交需要保存的 联赛图片
         console.log(leagueArrList);
-        //let sysStorage = new SysStorage();
-        //sysStorage.saveArrayToString(listUrl);
+        $.ajax({
+            method: "POST",
+            dataType: "json",
+            async: false,
+            contentType: 'application/json;charset=UTF-8',
+            url: ggbetConfig.pushImgUrl,
+            data: JSON.stringify(leagueArrList)
+        });
 
-        //ggbetConfig.refreshToGGBet();
+        // 保存需要遍历的比赛列表
+        let sysStorage = new SysStorage();
+        sysStorage.saveArrayToString(listUrl);
+        ggbetConfig.refreshToGGBet();
     }
 }
 
@@ -112,8 +123,16 @@ class MatchDetails {
             let league = $(obj).find('.LinesEllipsis').html(); // 联赛名称
             let gameAndStatus = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[0]).html(); // 游戏状态
             let startAt = $($(obj).find('.MatchHeaderInfobox__extra-info___2yjuT')[1]).html(); // 开始时间
-            let homeTeam = $(obj).find('.TeamHeader__name___3cKcj').first().html(); // 主队
+
+            let homeTeam = $(obj).find('.TeamHeader__logo___1MmhD').first().html(); // 主队
+            let homeTeamImg_str = $(obj).find('.TeamHeader__name___3cKcj').first().attr('style');
+            let homeTeamImg = ggbetConfig.regLeagueUrl("'" + homeTeamImg_str + "'");
+
+
             let awayTeam = $(obj).find('.TeamHeader__name___3cKcj').last().html(); // 客队
+            let awayTeamImg_str = $(obj).find('.TeamHeader__name___3cKcj').last().attr('style');
+            let awayTeamImg = ggbetConfig.regLeagueUrl("'" + awayTeamImg_str + "'");
+
             startAt = dateUtils.format_match_begintime(startAt);// 转换为日期格式
 
             let req = {};
@@ -122,7 +141,9 @@ class MatchDetails {
             req.matchStatus = gameAndStatus.split(',')[1];
             req.startAt = startAt;
             req.homeName = homeTeam;
+            req.homeImg = homeTeamImg;
             req.awayName = awayTeam;
+            req.awayImg = awayTeamImg;
             req.orgUrl = window.location.href;
 
             console.log(req);
@@ -148,16 +169,16 @@ class MatchDetails {
             req.matchBetList = bets;
             console.log(ggbetConfig.pushUrl);
             console.log(JSON.stringify(req));
-            $.ajax({
-                method: "POST",
-                dataType: "json",
-                async: false,
-                contentType: 'application/json;charset=UTF-8',
-                url: ggbetConfig.pushUrl,
-                data: JSON.stringify(req)
-            });
+            //$.ajax({
+            //    method: "POST",
+            //    dataType: "json",
+            //    async: false,
+            //    contentType: 'application/json;charset=UTF-8',
+            //    url: ggbetConfig.pushUrl,
+            //    data: JSON.stringify(req)
+            //});
 
-            ggbetConfig.refreshToGGBet();
+            //ggbetConfig.refreshToGGBet();
 
         } catch (err) {
             ggbetConfig.refreshToGGBet();

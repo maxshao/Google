@@ -1,0 +1,124 @@
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><small>新建仓库信息</small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <br />
+                <form id="form-new-product" data-parsley-validate class="form-horizontal form-label-left" action="/api/FurnitureProduct/save" method="post">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="repositoryId">
+                            仓库 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="repositoryId" id="repositoryId" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
+                            名称 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="code">
+                            代码 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="code" name="code" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specification">
+                            规格 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="specification" name="specification" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="type">
+                            类型 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="type" id="type" class="form-control"></select>
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="brand">
+                            品牌 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="brand" name="brand" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="origin">
+                            产地 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="origin" name="origin" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="unit">
+                            单位 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="unit" name="unit" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="inventory">
+                            库存 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="inventory" name="inventory" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="unitPrice">
+                            单价 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="unitPrice" name="unitPrice" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="agentId">
+                            代理商 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="agentId" id="agentId" class="form-control"></select>
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">
+                            备注 <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="description" name="description" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div> 
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button class="btn btn-primary" type="button">取消</button>
+                            <button class="btn btn-primary" type="reset">重置</button>
+                            <button type="submit" class="btn btn-success">提交保存</button>
+                        </div>
+                        <div>
+                            <input type="hidden" name="id" value="0"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
